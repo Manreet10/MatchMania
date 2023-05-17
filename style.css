@@ -1,0 +1,140 @@
+
+#gameboard {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-template-rows: repeat(3,1fr);
+    position: absolute;
+    top: 45%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    justify-items: center;
+    align-items: center;
+    gap: 2px;
+    margin: 2px;
+    
+}
+
+#title {
+    text-align: center;
+    margin-left: 4rem;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    font-style: "Times New Roman";
+  }
+
+  body {
+    background-color: rgb(162, 221, 232);
+  }
+
+  .points-label {
+    position: fixed;
+    bottom: 20px;
+    left: 795px;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 40px;
+    background-color: #333;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    color: #ffd8d8;
+  }
+  
+.imagecontainer {
+    width: 100px;
+    height: 100px;
+    border: 2px solid black;
+    display: inline-block;
+    margin: 2px;
+    /*margin-bottom: 10px;*/
+    background-color: gray;
+    cursor: pointer;
+  }
+
+  .imagecontainer {
+    width: 100px;
+    height: 100px;
+    border: 2px solid black;
+    display: inline-block;
+    margin: 2px;
+    position: relative;
+  }
+
+  .imagecontainer img {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: gray;
+    opacity: 1;
+  }
+
+/* Style for Quit Button */
+#quit-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #ff3333;
+    color: white;
+    font-size: 16px;
+    margin-top: 500px;
+    margin-left: 727px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  #quit-button:hover {
+    background-color: #959df1;
+  }
+  
+  /* Style for Restart Button */
+  #restart-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    margin-top: 40px;
+    margin-left: 700px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  #restart-button:hover {
+    background-color: #66BB6A;
+  }
+  
+  /* Style for Score Element */
+  #score {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 300px;
+    margin-left: 590px;
+    background-color: #959df1;
+    border-radius: 30px;
+    width: 350px;
+    
+  }
+  
+
+
+  
+  
+  
+  
+  
+  
+  

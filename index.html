@@ -1,0 +1,260 @@
+<html>
+
+
+    <head>
+
+        <title>Match Mania</title>
+        <!-- link the stylesheet to the html -->
+        <link rel="stylesheet" href="style.css">                                
+
+    </head>
+
+    <body>
+
+        <div id="title">Match Mania</div>
+        <div id = "points" class = "points-label">Points : 0</div>
+        <div id = "gameboard"></div>
+        <button id = "quit-button">Quit Game</button>
+
+        <!--add the javascript-->
+        <script type = "text/javascript">
+
+/*--------------------------------------------------------------------INITIALIZE THE VARIABLES---------------------------------------------------------------------*/
+            
+            //initialize variables
+            var clickedTiles = [];
+            var points = 0;
+
+/*-------------------------------------------------------------SETUP THE SCREEN(GAMEBOARD , QUITBUTTON)------------------------------------------------------------*/
+            
+            //setup stage for boardgame
+            var gameBoardElement = document.getElementById("gameboard");
+            setupGame(gameBoardElement);
+
+            //setup the quit button
+            var quitButtonElement = document.getElementById("quit-button");
+            quitButtonElement.addEventListener("click", function() {quitGame()});
+
+/*----------------------------------------------------------------------FUNCTIONS------------------------------------------------------------------------------------*/
+
+            //function to set up the gameboard
+            function setupGame(gameBoardElement)
+            {
+
+                var images = 
+                [
+                
+                    "images/pair1.jpg",
+                    "images/pair2.jpg",
+                    "images/pair3.jpg",
+                    "images/pair4.jpg",
+                    "images/pair5.jpg",
+                    "images/pair6.jpg",
+                    "images/pair1.jpg",
+                    "images/pair2.jpg",
+                    "images/pair3.jpg",
+                    "images/pair4.jpg",
+                    "images/pair5.jpg",
+                    "images/pair6.jpg"
+
+                ]
+
+
+                //shuffle images with each new game
+                images = shuffleBoard(images);
+
+                //add tiles to the gameboard and set eventListener to the tiles
+                images.forEach(function(imageSrc, i) {
+
+                    //calling the add tile board function to add images to the grid
+                    var {imageContainerElement, overlayElement} = addTileToBoard(gameBoardElement, imageSrc);
+
+                    //call click event handler for tiles
+                    addClickEventHandler(imageContainerElement, overlayElement, clickedTiles);
+
+                    //set the board to have 3 columns , 4 rows
+                    if((i+1) % 3 == 0)
+                    {
+                        addLineBreak(gameBoardElement);
+                    }
+                    
+                });
+            }
+
+
+            //shuffleboard functions shuffles the images in the grid each time the page is loaded
+            function shuffleBoard(array)
+            {
+
+                var currentIndex = array.length, temporaryValue, randomIndex;
+
+                //set indexes to different images
+                while(0 !== currentIndex)
+                {
+
+                    randomIndex = Math.floor(Math.random() * currentIndex)
+                    currentIndex -= 1;
+
+                    temporaryValue = array[currentIndex]
+                    array[currentIndex] = array[randomIndex]
+                    array[randomIndex] = temporaryValue
+
+                }
+
+                return array;
+            }
+
+            //addLineBreak adds lines and shifts the next image to next line
+            function addLineBreak(gameBoardElement)
+            {
+                //break the line
+                var nextLineElement = document.createElement("br");
+                //append nextLineElement to gameBoard
+                gameBoardElement.appendChild(nextLineElement);
+            }
+
+
+            // addTileToBoard to add image to board
+            function addTileToBoard(gameBoardElement, imageSrc)
+            {
+                //create a div element named imageContainerElement
+                var imageContainerElement = document.createElement("div");
+                //add to classlist
+			    imageContainerElement.classList.add("imagecontainer");
+
+                //actual images
+                var imageElement = document.createElement("img");
+                //set source of the images
+                imageElement.setAttribute("src", imageSrc);
+
+                //overlay element for the picture
+                var overlayElement = document.createElement("div");
+                //add to classlist
+                overlayElement.classList.add("overlay");
+
+                //append actual and overlay elements to imageContainerElement
+                imageContainerElement.appendChild(imageElement);
+                imageContainerElement.appendChild(overlayElement);
+
+                //add imageContainerElement to gameBoardElement
+                gameBoardElement.appendChild(imageContainerElement);
+
+                //return vars
+                return{imageContainerElement, overlayElement, imageElement};
+            
+            }
+
+
+            // function addClickEventHandler to handle when the image is clicked
+            function addClickEventHandler(tile,overlay, clickedTiles)
+            {
+                //call the handle tile click function
+                tile.addEventListener("click", function () { handleTileClick(clickedTiles, tile)})
+            }
+
+            //function handles all the events, for images to match, not match
+            function handleTileClick(clickedTiles, tile)
+            {
+                //set it to transparent on click
+                tile.querySelector(".overlay").style.backgroundColor = "transparent";
+
+                //push the clicked tile to clickedTiles if not already matched
+                if (!tile.classList.contains("matched"))
+                {
+                    clickedTiles.push(tile);
+                }
+                        
+
+                //if 2 tiles clicked, compare
+                var tile1 = clickedTiles[0];
+                var tile2 = clickedTiles[1];
+
+                //this ensures that 2 tiles are clicked and doesn't throw a query selector for tile2 
+                if(tile1 && tile2)
+                {
+
+                    //compare src to check if same
+                    if(tile1.querySelector("img").getAttribute("src") === tile2.querySelector("img").getAttribute("src"))
+                    {
+                            
+                        //increment points
+                        points++;
+                        //update on screen
+                        document.getElementById("points").innerHTML = "Points: " + points;
+
+                        //mark tiles as marked
+                        tile1.classList.add("matched");
+                        tile2.classList.add("matched");
+
+                        //remove the eventlistner for click from the tile
+                        tile1.removeEventListener("click", handleTileClick);
+                        tile2.removeEventListener("click", handleTileClick);
+
+                        //set clickedtiles to empty        
+                        clickedTiles.length = 0;
+
+                        if(points == 6)
+                        {
+                            quitGame();
+                        }
+
+                    }
+
+                    //if the 2 consecutively clicked tiles are not same
+                    else
+                    {
+
+                        //setTimeOut to set the background back to gray after the specified time
+                        setTimeout(function(){
+
+                            //after a litle delay, reset the bg to gray
+                            tile1.querySelector(".overlay").style.backgroundColor = "";             //sets color back to orginal
+                            tile2.querySelector(".overlay").style.backgroundColor = "";
+
+                            //empty the clicked array
+                            clickedTiles.length = 0;
+                                    
+                        }, 800);
+                            
+                    }
+                }
+                                   
+            }
+
+
+            //function to display score and option to restart game when quit is clicked
+            function quitGame()
+            {
+                // display the score in the middle of the screen
+                var scoreElement = document.createElement("div");
+                scoreElement.setAttribute("id", "score");
+                scoreElement.innerHTML = "Your final score is: " + points;
+                document.body.appendChild(scoreElement);
+
+                // add a restart button
+                var restartButtonElement = document.createElement("button");
+                restartButtonElement.setAttribute("id", "restart-button");
+                restartButtonElement.innerHTML = "Restart Game";
+                document.body.appendChild(restartButtonElement);
+
+                // clear the entire screen on quit
+                document.getElementById("title").style.display = "none";
+                document.getElementById("points").style.display = "none";
+                document.getElementById("gameboard").style.display = "none";
+                document.getElementById("quit-button").style.display = "none";
+
+                // restart the game on restart button click
+                restartButtonElement.addEventListener("click", function() {restartGame()});
+            }
+
+            //function to reload page and reset everything when the player restarts the game
+            function restartGame()
+            {
+                location.reload();
+            }
+        
+        </script>
+
+    </body>
+
+</html>
